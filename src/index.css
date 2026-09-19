@@ -1,0 +1,371 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens sourced from DESIGN.md ("Nexus Precision").
+ * Change values here to update the look of the whole site.
+ */
+@theme {
+  /* Color tokens (Material 3 style role names) */
+  --color-on-tertiary-fixed-variant: #004c6e;
+  --color-on-primary-fixed: #0e1c2f;
+  --color-tertiary-fixed-dim: #89ceff;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-tertiary: #ffffff;
+  --color-on-primary-container: #77849c;
+  --color-inverse-surface: #213145;
+  --color-on-surface: #0b1c30;
+  --color-on-secondary-fixed: #00174b;
+  --color-surface: #f8f9ff;
+  --color-error-container: #ffdad6;
+  --color-on-tertiary-fixed: #001e2f;
+  --color-surface-container-low: #eff4ff;
+  --color-primary-fixed-dim: #bac7e1;
+  --color-outline: #75777d;
+  --color-secondary-fixed: #dbe1ff;
+  --color-tertiary: #000000;
+  --color-inverse-on-surface: #eaf1ff;
+  --color-on-primary-fixed-variant: #3a475c;
+  --color-secondary-fixed-dim: #b4c5ff;
+  --color-tertiary-fixed: #c9e6ff;
+  --color-on-secondary: #ffffff;
+  --color-primary-fixed: #d6e3fe;
+  --color-on-background: #0b1c30;
+  --color-primary: #000000;
+  --color-surface-dim: #cbdbf5;
+  --color-error: #ba1a1a;
+  --color-inverse-primary: #bac7e1;
+  --color-primary-container: #0e1c2f;
+  --color-tertiary-container: #001e2f;
+  --color-on-surface-variant: #44474c;
+  --color-surface-container-highest: #d3e4fe;
+  --color-on-error: #ffffff;
+  --color-secondary-container: #316bf3;
+  --color-surface-tint: #525f75;
+  --color-on-secondary-container: #fefcff;
+  --color-surface-container-high: #dce9ff;
+  --color-secondary: #0051d5;
+  --color-background: #f8f9ff;
+  --color-on-primary: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-on-secondary-fixed-variant: #003ea8;
+  --color-surface-container: #e5eeff;
+  --color-on-tertiary-container: #008cc7;
+  --color-outline-variant: #c5c6cd;
+  --color-surface-variant: #d3e4fe;
+
+  /* Font families, keyed to match the semantic type-scale names below */
+  --font-headline-lg: 'Fira Sans', system-ui, sans-serif;
+  --font-headline-sm: 'Fira Sans', system-ui, sans-serif;
+  --font-headline-xl: 'Fira Sans', system-ui, sans-serif;
+  --font-headline-md: 'Fira Sans', system-ui, sans-serif;
+  --font-display-hero: 'Fira Sans', system-ui, sans-serif;
+  --font-eyebrow: 'Fira Sans', system-ui, sans-serif;
+  --font-label-lg: 'Fira Sans', system-ui, sans-serif;
+  --font-body-sm: 'Fira Sans', system-ui, sans-serif;
+  --font-label-sm: 'Fira Sans', system-ui, sans-serif;
+  --font-body-lg: 'Fira Sans', system-ui, sans-serif;
+  --font-body-md: 'Fira Sans', system-ui, sans-serif;
+
+  /*
+   * Fluid type scale: size + line-height + letter-spacing per name
+   * (font-weight applied via utility, e.g. font-bold).
+   *
+   * Heading and lede sizes use clamp(MIN, INTERCEPT + SLOPE*vw, MAX) so they
+   * scale continuously between a 360px (small mobile) floor and a 1024px
+   * (laptop/desktop) ceiling instead of jumping between fixed breakpoint
+   * values. MAX equals the original desktop size exactly, so 1024px+
+   * viewports are pixel-identical to the previous fixed scale. Below 360px
+   * the value stays pinned at MIN so text never shrinks past a readable
+   * floor. Line-heights are unitless multipliers (not fixed rem values) so
+   * they scale proportionally with the fluid font-size and keep the same
+   * visual rhythm at every viewport width; letter-spacing is already in
+   * `em`, which is relative to font-size and needs no change.
+   *
+   * Small UI text (body-md, body-sm, label-lg, label-sm, eyebrow) is kept
+   * at a fixed size across breakpoints — it was never reported as oversized
+   * and fluid-shrinking already-small text would hurt legibility on mobile.
+   */
+  --text-display-hero: clamp(2.25rem, calc(1.44rem + 3.61vw), 3.75rem);
+  --text-display-hero--line-height: 1.1333;
+  --text-display-hero--letter-spacing: -0.025em;
+
+  --text-headline-xl: clamp(1.875rem, calc(1.4rem + 2.11vw), 2.75rem);
+  --text-headline-xl--line-height: 1.1818;
+  --text-headline-xl--letter-spacing: -0.02em;
+
+  --text-headline-lg: clamp(1.5rem, calc(1.23rem + 1.2vw), 2rem);
+  --text-headline-lg--line-height: 1.25;
+  --text-headline-lg--letter-spacing: -0.015em;
+
+  --text-headline-md: clamp(1.25rem, calc(1.11rem + 0.6vw), 1.5rem);
+  --text-headline-md--line-height: 1.3333;
+  --text-headline-md--letter-spacing: -0.01em;
+
+  --text-headline-sm: clamp(1.125rem, calc(1.06rem + 0.3vw), 1.25rem);
+  --text-headline-sm--line-height: 1.4;
+
+  --text-body-lg: clamp(1rem, calc(0.93rem + 0.3vw), 1.125rem);
+  --text-body-lg--line-height: 1.5556;
+
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.5rem;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.25rem;
+
+  --text-label-lg: 0.875rem;
+  --text-label-lg--line-height: 1.25rem;
+  --text-label-lg--letter-spacing: 0.01em;
+
+  --text-label-sm: 0.75rem;
+  --text-label-sm--line-height: 1rem;
+  --text-label-sm--letter-spacing: 0.025em;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1rem;
+  --text-eyebrow--letter-spacing: 0.08em;
+
+  /* Icon sizes (material-symbols glyphs), named after their pixel size */
+  --text-icon-16: 1rem;
+  --text-icon-18: 1.125rem;
+  --text-icon-20: 1.25rem;
+  --text-icon-22: 1.375rem;
+  --text-icon-24: 1.5rem;
+  --text-icon-26: 1.625rem;
+  --text-icon-28: 1.75rem;
+  --text-icon-30: 1.875rem;
+
+  /* Layout spacing */
+  --spacing-gutter: 1.5rem;
+  --spacing-gutter-desktop: 2rem;
+  --spacing-margin: 1rem;
+  --spacing-margin-tablet: 2rem;
+  --spacing-margin-desktop: 4rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2.5rem;
+
+  /*
+   * Elevation (box-shadow) scale. "cta"/"button" carry the brand
+   * (--color-secondary) tint used on primary calls to action; "bar",
+   * "popover" and "card-float" use a neutral ink tint for surfaces that
+   * sit above the page (sticky bars, dropdowns, floating cards).
+   */
+  --shadow-bar: 0 1px 8px rgba(0, 0, 0, 0.04);
+  --shadow-cta: 0 4px 14px 0 rgba(0, 81, 213, 0.3);
+  --shadow-button: 0 4px 20px 0 rgba(0, 81, 213, 0.3);
+  --shadow-float: 0 10px 25px -5px rgba(0, 81, 213, 0.35), 0 8px 10px -6px rgba(0, 81, 213, 0.2);
+  --shadow-orbit: 0 10px 25px -5px rgba(0, 81, 213, 0.4);
+  --shadow-popover: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-card-float: 0 20px 50px -15px rgba(15, 23, 42, 0.12);
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    overscroll-behavior: none;
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Orbit ecosystem diagram motion */
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-counter-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.animate-orbit-track {
+  animation: orbit-spin 40s linear infinite;
+}
+.animate-orbit-counter {
+  animation: orbit-counter-spin 40s linear infinite;
+}
+.orbit-pause-hover:hover .animate-orbit-track,
+.orbit-pause-hover:hover .animate-orbit-counter {
+  animation-play-state: paused;
+}
+
+/*
+ * Outer ring scroll fly-out: starts collapsed near the center, then
+ * expands/settles into place once the diagram scrolls into view. One-shot
+ * (triggered via IntersectionObserver in OrbitDiagram.tsx), not tied to
+ * continuous scroll position, so it comes to rest instead of moving with
+ * every scroll tick.
+ */
+.orbit-outer-ring {
+  opacity: 0;
+  transform: scale(0.35) translateY(22px) rotate(-10deg);
+  transition:
+    opacity 1.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+    transform 1.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform, opacity;
+}
+@media (min-width: 768px) {
+  .orbit-outer-ring {
+    transform: scale(0.2) translateY(28px) rotate(-12deg);
+  }
+}
+/* Must come after the base + media-query rules above so it always wins once applied. */
+.orbit-outer-ring--visible {
+  opacity: 1;
+  transform: scale(1) translateY(0) rotate(0deg);
+  will-change: auto;
+}
+/* Slightly calmer rotation on small screens, where the ring's path is shortest */
+@media (max-width: 640px) {
+  .animate-orbit-track {
+    animation-duration: 55s;
+  }
+  .animate-orbit-counter {
+    animation-duration: 55s;
+  }
+}
+
+/* Hero card: the card itself stays static; only its ambient glow pulses */
+@keyframes hero-glow-3d {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.98) translateZ(-10px);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05) translateZ(-10px);
+  }
+}
+.hero-3d-perspective {
+  perspective: 1200px;
+}
+.hero-3d-card {
+  transform-style: preserve-3d;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.hero-3d-card:hover {
+  box-shadow:
+    0 30px 60px -15px rgba(0, 81, 213, 0.2),
+    0 20px 30px -10px rgba(15, 23, 42, 0.1);
+}
+.hero-ambient-glow {
+  animation: hero-glow-3d 8.5s ease-in-out infinite;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.translate-z-badge {
+  transform: translateZ(24px);
+}
+.translate-z-img {
+  transform: translateZ(40px);
+}
+
+/*
+ * Mobile-only hero background: the same card image, reused as a soft,
+ * slowly drifting backdrop behind the section content (the foreground
+ * card is hidden below the `sm` breakpoint). Static baseline values match
+ * the keyframe's 0%/100% frame, so disabling the animation (reduced
+ * motion) still leaves a correct, subtle, non-distracting result.
+ */
+@keyframes hero-bg-drift {
+  0%,
+  100% {
+    transform: scale(1.1) translate(0, 0);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scale(1.2) translate(-2%, -1.5%);
+    opacity: 0.16;
+  }
+}
+.hero-mobile-bg {
+  opacity: 0.1;
+  transform: scale(1.1);
+  animation: hero-bg-drift 24s ease-in-out infinite;
+}
+
+/* Chat widget panel pop-in */
+@keyframes chat-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-chat-pop {
+  animation: chat-pop 0.25s ease-out;
+}
+
+/* Continuous team marquee */
+@keyframes team-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-team-marquee {
+  display: flex;
+  width: max-content;
+  animation: team-marquee 42s linear infinite;
+}
+.animate-team-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-orbit-track,
+  .animate-orbit-counter,
+  .hero-ambient-glow,
+  .hero-mobile-bg,
+  .animate-team-marquee,
+  .animate-chat-pop {
+    animation: none !important;
+  }
+  .orbit-outer-ring {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
