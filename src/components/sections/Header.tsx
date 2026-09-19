@@ -16,8 +16,8 @@ function Header() {
     <header className="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-bar">
       <div className="h-20 max-w-7xl mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between">
         <a className="flex items-center gap-3 group focus:outline-none" href="#">
-          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-on-secondary shadow-sm transition-transform duration-200 group-hover:scale-105">
-            <Icon name="hub" className="text-icon-24" />
+          <div className="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105">
+            <img src="/favicon.svg" alt="WX Technologies" className="w-6 h-6" />
           </div>
           <div className="flex flex-col">
             <span className="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none group-hover:text-secondary transition-colors duration-150">

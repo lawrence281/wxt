@@ -27,8 +27,8 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-gutter-desktop">
           <div className="lg:col-span-4 flex flex-col space-y-4">
             <a className="flex items-center gap-3 focus:outline-none" href="#">
-              <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
-                <Icon name="hub" className="text-icon-20" />
+              <div className="w-9 h-9 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm">
+                <img src="/favicon.svg" alt="WX Technologies" className="w-6 h-6" />
               </div>
               <div className="flex flex-col">
                 <span className="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">
