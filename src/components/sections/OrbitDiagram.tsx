@@ -19,14 +19,14 @@ function OrbitDiagram() {
         <circle cx="200" cy="200" r="70" stroke="var(--tone-line)" />
       </svg>
 
-      <div className="relative z-20 flex size-[37%] flex-col items-center justify-center rounded-pill bg-accent p-3 text-center text-on-accent shadow-float ring-8 ring-ground transition-slow hover:scale-105">
+      <div className="relative z-20 flex size-[44%] flex-col items-center justify-center rounded-pill bg-accent p-2 text-center @sm:size-[37%] @sm:p-3 text-on-accent shadow-float ring-8 ring-ground transition-slow hover:scale-105">
         <span
           aria-hidden="true"
           className="absolute -inset-3 animate-ping-soft rounded-pill border border-accent/50"
         />
-        <Icon className="mb-1 text-icon-28" name="supervised_user_circle" />
-        <span className="font-display text-title leading-tight">Brand Advocacy</span>
-        <span className="mt-1 font-mono text-label uppercase text-on-accent-soft">Social Media Users</span>
+        <Icon className="mb-0.5 text-icon-20 @sm:mb-1 @sm:text-icon-28" name="supervised_user_circle" />
+        <span className="font-display text-small font-semibold leading-tight @sm:text-title">Brand Advocacy</span>
+        <span className="mt-1 font-mono text-[0.6875rem] uppercase leading-tight tracking-normal text-on-accent-soft @sm:text-label @sm:tracking-widest">Social Media Users</span>
       </div>
 
       {/* Outer ring: category nodes. Flies out from the center once scrolled into view, then holds still. */}
