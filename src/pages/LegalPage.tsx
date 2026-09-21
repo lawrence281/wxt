@@ -101,7 +101,7 @@ function LegalPage({ doc }: { doc: LegalDocument }) {
 
       <div className="border-t border-line bg-ground">
         <div className="mx-auto grid max-w-site gap-y-10 px-page py-14 lg:grid-cols-12 lg:gap-x-[var(--spacing-gutter)] lg:py-20">
-          <div className="lg:col-span-3">
+          <div className="hidden lg:col-span-3 lg:block">
             <LegalToc activeId={activeId} items={toc} />
           </div>
           <article className="min-w-0 lg:col-span-8 lg:col-start-4 xl:col-span-7 xl:col-start-5">
