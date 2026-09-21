@@ -20,6 +20,6 @@ export const moreNavLinks: NavLink[] = [
 export const footerLinks: NavLink[] = [
   { label: 'Terms & Conditions', href: ROUTES.termsAndConditions },
   { label: 'Privacy Policy', href: ROUTES.privacyPolicy },
-  { label: 'About Us', href: '#' },
-  { label: 'Help Center', href: '#' },
+  { label: 'About Us', href: '#about' },
+  { label: 'Contact', href: '#contact' },
 ]
