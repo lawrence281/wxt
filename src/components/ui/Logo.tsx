@@ -1,12 +1,17 @@
+import Link from './Link'
 import { cn } from '../../lib/cn'
+import { usePathname } from '../../lib/router'
+import { ROUTES } from '../../lib/routes'
 
 interface LogoProps {
   className?: string
 }
 
 function Logo({ className }: LogoProps) {
+  const isHome = usePathname() === ROUTES.home
+
   return (
-    <a className={cn('group inline-flex items-center gap-3', className)} href="#">
+    <Link className={cn('group inline-flex items-center gap-3', className)} href={isHome ? '#' : ROUTES.home}>
       <img
         alt="WX Technologies"
         className="size-9 transition-slow group-hover:rotate-90"
@@ -18,7 +23,7 @@ function Logo({ className }: LogoProps) {
         <span className="font-display text-title leading-none text-fg">WX Technologies</span>
         <span className="mt-1.5 font-mono text-label uppercase text-fg-mute">People &amp; Technology</span>
       </span>
-    </a>
+    </Link>
   )
 }
 

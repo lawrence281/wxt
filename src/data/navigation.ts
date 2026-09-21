@@ -1,3 +1,5 @@
+import { ROUTES } from '../lib/routes'
+
 export interface NavLink {
   label: string
   href: string
@@ -16,8 +18,8 @@ export const moreNavLinks: NavLink[] = [
 ]
 
 export const footerLinks: NavLink[] = [
-  { label: 'Terms & Conditions', href: '#' },
-  { label: 'Privacy Policy', href: '#' },
+  { label: 'Terms & Conditions', href: ROUTES.termsAndConditions },
+  { label: 'Privacy Policy', href: ROUTES.privacyPolicy },
   { label: 'About Us', href: '#' },
   { label: 'Help Center', href: '#' },
 ]

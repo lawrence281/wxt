@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
 import Button from '../ui/Button'
 import Icon from '../ui/Icon'
+import Link from '../ui/Link'
 import Logo from '../ui/Logo'
 import ScrollProgress from '../ui/ScrollProgress'
 import { moreNavLinks, primaryNavLinks } from '../../data/navigation'
 import { observeInView } from '../../lib/inView'
 import { cn } from '../../lib/cn'
+import { usePathname } from '../../lib/router'
+import { ROUTES } from '../../lib/routes'
 import { scrollToHash } from '../../utils/scrollToHash'
 
 const SECTION_IDS = ['home', 'about', 'products-section', 'team', 'contact']
@@ -18,6 +21,7 @@ function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [activeId, setActiveId] = useState('home')
   const moreRef = useRef<HTMLDivElement>(null)
+  const isHome = usePathname() === ROUTES.home
 
   const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     scrollToHash(event, href)
@@ -34,6 +38,7 @@ function Header() {
 
   // Scroll-spy: whichever section crosses a thin band at mid-viewport becomes the active link.
   useEffect(() => {
+    if (!isHome) return
     const stops = SECTION_IDS.flatMap((id) => {
       const section = document.getElementById(id)
       if (!section) return []
@@ -48,7 +53,7 @@ function Header() {
       ]
     })
     return () => stops.forEach((stop) => stop())
-  }, [])
+  }, [isHome])
 
   useEffect(() => {
     document.documentElement.style.overflow = mobileOpen ? 'hidden' : ''
@@ -105,9 +110,9 @@ function Header() {
 
           <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
             {primaryNavLinks.map((link) => {
-              const isActive = link.href === `#${activeId}`
+              const isActive = isHome && link.href === `#${activeId}`
               return (
-                <a
+                <Link
                   aria-current={isActive ? 'location' : undefined}
                   className={cn(
                     'group relative px-4 py-2 text-small font-medium transition-fast',
@@ -125,7 +130,7 @@ function Header() {
                       isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
                     )}
                   />
-                </a>
+                </Link>
               )
             })}
 
@@ -159,14 +164,14 @@ function Header() {
                 <ul className="border border-line bg-raised p-1.5 shadow-lift">
                   {moreNavLinks.map((link) => (
                     <li key={link.label}>
-                      <a
+                      <Link
                         className="flex items-center justify-between rounded-xs px-3 py-2.5 text-small font-medium text-fg-soft transition-fast hover:bg-ground hover:text-fg"
                         href={link.href}
                         onClick={(event) => handleNavClick(event, link.href)}
                       >
                         {link.label}
                         <Icon className="text-icon-16" name="arrow_outward" />
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -229,7 +234,7 @@ function Header() {
           <ul className="border-t border-line">
             {mobileLinks.map((link, index) => (
               <li className="overflow-hidden border-b border-line" key={link.label}>
-                <a
+                <Link
                   className={cn(
                     'flex items-center justify-between py-5 font-display text-display-md text-fg transition-slow',
                     mobileOpen ? 'translate-y-0' : 'translate-y-full',
@@ -240,7 +245,7 @@ function Header() {
                 >
                   {link.label}
                   <Icon className="text-icon-24 text-signal" name="arrow_outward" />
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import Icon from '../ui/Icon'
+import Link from '../ui/Link'
 import Logo from '../ui/Logo'
 import SocialIcon from '../ui/SocialIcon'
 import type { SocialPlatform } from '../ui/SocialIcon'
 import { footerLinks } from '../../data/navigation'
+import { ROUTES } from '../../lib/routes'
 
 const socialLinks: { icon: SocialPlatform; href: string; label: string }[] = [
   { icon: 'linkedin', href: 'https://linkedin.com', label: 'LinkedIn' },
@@ -97,9 +99,9 @@ function Footer() {
               <ul className="space-y-3 text-small">
                 {footerLinks.map((link) => (
                   <li key={link.label}>
-                    <a className={`${footerLink} link-underline`} href={link.href}>
+                    <Link className={`${footerLink} link-underline`} href={link.href}>
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -135,15 +137,15 @@ function Footer() {
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-line py-8 text-small text-fg-mute sm:flex-row">
           <p>© 2023 by WX Technologies Pvt Ltd. All rights reserved.</p>
           <div className="flex items-center gap-6 font-mono text-label uppercase">
-            <a className="transition-fast hover:text-signal" href="#">
+            <Link className="transition-fast hover:text-signal" href={ROUTES.privacyPolicy}>
               Privacy
-            </a>
-            <a className="transition-fast hover:text-signal" href="#">
+            </Link>
+            <Link className="transition-fast hover:text-signal" href={ROUTES.termsAndConditions}>
               Terms
-            </a>
-            <a className="transition-fast hover:text-signal" href="#contact">
+            </Link>
+            <Link className="transition-fast hover:text-signal" href="#contact">
               Support
-            </a>
+            </Link>
           </div>
         </div>
       </div>
