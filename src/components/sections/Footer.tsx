@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import Icon from '../ui/Icon'
+import Logo from '../ui/Logo'
 import SocialIcon from '../ui/SocialIcon'
 import type { SocialPlatform } from '../ui/SocialIcon'
 import { footerLinks } from '../../data/navigation'
@@ -10,11 +12,14 @@ const socialLinks: { icon: SocialPlatform; href: string; label: string }[] = [
   { icon: 'facebook', href: 'https://facebook.com', label: 'Facebook' },
 ]
 
+const columnTitle = 'font-mono text-label uppercase text-fg-mute'
+const footerLink = 'text-fg transition-fast hover:text-signal'
+
 function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
-  const handleSubscribe = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubscribe = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!email) return
     setSubscribed(true)
@@ -22,137 +27,132 @@ function Footer() {
   }
 
   return (
-    <footer className="w-full bg-surface-container-lowest shadow-bar">
-      <div className="max-w-7xl mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop pt-16 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-gutter-desktop">
-          <div className="lg:col-span-4 flex flex-col space-y-4">
-            <a className="flex items-center gap-3 focus:outline-none" href="#">
-              <div className="w-9 h-9 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm">
-                <img src="/favicon.svg" alt="WX Technologies" className="w-6 h-6" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">
-                  WX Technologies
-                </span>
-                <span className="font-eyebrow text-eyebrow text-on-surface-variant uppercase tracking-widest mt-1">
-                  People &amp; Technology
-                </span>
-              </div>
-            </a>
-            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm">
+    <footer className="tone-night relative overflow-hidden bg-ground text-fg">
+      <div className="relative mx-auto max-w-site px-page pt-section">
+        <div className="grid gap-x-[var(--spacing-gutter)] gap-y-12 border-t border-line-strong pt-14 md:grid-cols-2 lg:grid-cols-12">
+          <div className="flex flex-col items-start gap-6 lg:col-span-4">
+            <Logo />
+            <p className="max-w-sm text-small text-fg-soft">
               Pioneering high-performance B2B digital infrastructure, combining mathematical precision with
               human-centric social connectivity.
             </p>
-            <div className="flex items-center gap-2 pt-2">
+            <ul className="flex items-center gap-2">
               {socialLinks.map((social) => (
-                <a
-                  aria-label={`WX Technologies on ${social.label}`}
-                  className="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant transition-all duration-200 hover:bg-secondary hover:text-on-secondary hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:scale-95"
-                  href={social.href}
-                  key={social.label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  title={social.label}
-                >
-                  <SocialIcon className="w-[18px] h-[18px]" name={social.icon} />
-                </a>
+                <li key={social.label}>
+                  <a
+                    aria-label={`WX Technologies on ${social.label}`}
+                    className="grid size-11 place-items-center rounded-sm border border-line-strong text-fg transition-base hover:-translate-y-0.5 hover:border-accent-bright hover:bg-accent-bright hover:text-night"
+                    href={social.href}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    title={social.label}
+                  >
+                    <SocialIcon className="size-[1.125rem]" name={social.icon} />
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          <div className="lg:col-span-3 flex flex-col space-y-3">
-            <h4 className="font-eyebrow text-eyebrow uppercase tracking-wider text-on-surface">Contact Us</h4>
-            <div className="space-y-2.5 font-body-sm text-body-sm text-on-surface-variant">
-              <div className="flex items-start gap-2">
-                <Icon name="location_on" className="text-icon-18 text-secondary shrink-0 mt-0.5" />
+          <div className="flex flex-col gap-5 lg:col-span-3">
+            <h2 className={columnTitle}>Contact Us</h2>
+            <ul className="space-y-3.5 text-small text-fg-soft">
+              <li className="flex items-start gap-3">
+                <Icon className="mt-0.5 text-icon-18 text-signal" name="location_on" />
                 <span>No 1C, 94th St, 21st Ave, Ashok Nagar, Chennai 600083</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Icon name="call" className="text-icon-18 text-secondary shrink-0" />
+              </li>
+              <li className="flex items-center gap-3">
+                <Icon className="text-icon-18 text-signal" name="call" />
                 <span>
                   Gen:{' '}
-                  <a className="text-on-surface hover:text-secondary transition-colors" href="tel:+919884021323">
+                  <a className={footerLink} href="tel:+919884021323">
                     +91 9884021323
                   </a>
                 </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Icon name="mail" className="text-icon-18 text-secondary shrink-0" />
+              </li>
+              <li className="flex items-center gap-3">
+                <Icon className="text-icon-18 text-signal" name="mail" />
                 <span>
                   Sales:{' '}
-                  <a className="text-on-surface hover:text-secondary transition-colors" href="mailto:info@wxt.global">
+                  <a className={footerLink} href="mailto:info@wxt.global">
                     info@wxt.global
                   </a>
                 </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Icon name="support_agent" className="text-icon-18 text-secondary shrink-0" />
+              </li>
+              <li className="flex items-center gap-3">
+                <Icon className="text-icon-18 text-signal" name="support_agent" />
                 <span>
                   Support:{' '}
-                  <a className="text-on-surface hover:text-secondary transition-colors" href="mailto:info@wxt.global">
+                  <a className={footerLink} href="mailto:info@wxt.global">
                     info@wxt.global
                   </a>
                 </span>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
 
-          <div className="lg:col-span-2 flex flex-col space-y-3">
-            <h4 className="font-eyebrow text-eyebrow uppercase tracking-wider text-on-surface">Quick Links</h4>
-            <nav className="flex flex-col space-y-2">
-              {footerLinks.map((link) => (
-                <a
-                  key={link.label}
-                  className="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors"
-                  href={link.href}
-                >
-                  {link.label}
-                </a>
-              ))}
+          <div className="flex flex-col gap-5 lg:col-span-2">
+            <h2 className={columnTitle}>Quick Links</h2>
+            <nav aria-label="Footer">
+              <ul className="space-y-3 text-small">
+                {footerLinks.map((link) => (
+                  <li key={link.label}>
+                    <a className={`${footerLink} link-underline`} href={link.href}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </nav>
           </div>
 
-          <div className="lg:col-span-3 flex flex-col space-y-3">
-            <h4 className="font-eyebrow text-eyebrow uppercase tracking-wider text-on-surface">Stay Informed</h4>
-            <p className="font-body-sm text-body-sm text-on-surface-variant">
+          <div className="flex flex-col gap-5 md:col-span-2 lg:col-span-3">
+            <h2 className={columnTitle}>Stay Informed</h2>
+            <p className="text-small text-fg-soft">
               Sign up to get the latest news on our product and enterprise innovations.
             </p>
-            <form className="flex flex-col sm:flex-row gap-2 pt-1" onSubmit={handleSubscribe}>
+            <form className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row" onSubmit={handleSubscribe}>
               <input
-                className="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 transition-all duration-200"
+                aria-label="Email address"
+                className="min-h-12 w-full min-w-0 border-b border-line-strong bg-transparent px-1 text-small text-fg transition-base placeholder:text-fg-mute focus:border-signal focus:outline-none"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Enter your email"
                 type="email"
                 value={email}
               />
-              <button
-                className="px-4 py-2.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm hover:bg-secondary transition-colors duration-150 whitespace-nowrap"
-                type="submit"
-              >
+              <button className="btn btn-primary min-h-12 shrink-0" type="submit">
                 Subscribe
               </button>
             </form>
             {subscribed && (
-              <p className="font-body-sm text-body-sm text-secondary">Thanks — you&apos;re on the list.</p>
+              <p className="text-small text-signal" role="status">
+                Thanks — you're on the list.
+              </p>
             )}
           </div>
         </div>
 
-        <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant">
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-line py-8 text-small text-fg-mute sm:flex-row">
           <p>© 2023 by WX Technologies Pvt Ltd. All rights reserved.</p>
-          <div className="flex items-center gap-6 font-label-sm text-label-sm">
-            <a className="text-on-surface-variant hover:text-secondary transition-colors" href="#">
+          <div className="flex items-center gap-6 font-mono text-label uppercase">
+            <a className="transition-fast hover:text-signal" href="#">
               Privacy
             </a>
-            <a className="text-on-surface-variant hover:text-secondary transition-colors" href="#">
+            <a className="transition-fast hover:text-signal" href="#">
               Terms
             </a>
-            <a className="text-on-surface-variant hover:text-secondary transition-colors" href="#contact">
+            <a className="transition-fast hover:text-signal" href="#contact">
               Support
             </a>
           </div>
         </div>
       </div>
+
+      <div
+        aria-hidden="true"
+        data-text="WX Technologies"
+        className="pointer-events-none select-none overflow-hidden whitespace-nowrap px-page pb-2 text-center font-display text-[clamp(2.5rem,12.6vw,14rem)] font-semibold leading-[0.8] tracking-tighter text-fg/[0.06] before:content-[attr(data-text)]"
+      />
     </footer>
   )
 }

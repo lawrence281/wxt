@@ -12,9 +12,12 @@ import ChatButton from './components/sections/ChatButton'
 
 function App() {
   return (
-    <div className="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+    <div className="bg-ground text-fg">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <Header />
-      <main className="w-full pt-20 bg-background">
+      <main id="main">
         <Hero />
         <WhoWeAreHowWeWork />
         <ProductsEcosystem />

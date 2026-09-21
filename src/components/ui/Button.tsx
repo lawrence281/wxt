@@ -1,27 +1,29 @@
 import type { AnchorHTMLAttributes, ReactNode } from 'react'
+import Icon from './Icon'
+import { cn } from '../../lib/cn'
 
-type ButtonVariant = 'primary' | 'secondary' | 'dark'
+type ButtonVariant = 'primary' | 'outline'
 
 interface ButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   variant?: ButtonVariant
+  /** Adds a trailing arrow that nudges forward on hover. */
+  arrow?: boolean
+  /** Optional leading icon glyph name. */
+  icon?: string
   children: ReactNode
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    'bg-secondary text-on-secondary shadow-button hover:bg-on-secondary-fixed-variant hover:shadow-none',
-  secondary:
-    'bg-surface-container-lowest text-on-surface shadow-sm hover:shadow hover:bg-surface-container',
-  dark: 'bg-primary text-on-primary hover:bg-secondary shadow-sm',
+  primary: 'btn-primary',
+  outline: 'btn-outline',
 }
 
-function Button({ variant = 'primary', className = '', children, ...anchorProps }: ButtonProps) {
+function Button({ variant = 'primary', arrow = false, icon, className, children, ...anchorProps }: ButtonProps) {
   return (
-    <a
-      className={`inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-label-lg text-label-lg transition-all duration-200 ${variantClasses[variant]} ${className}`}
-      {...anchorProps}
-    >
-      {children}
+    <a className={cn('btn', variantClasses[variant], className)} {...anchorProps}>
+      {icon && <Icon className="text-icon-18" name={icon} />}
+      <span>{children}</span>
+      {arrow && <Icon className="btn-arrow text-icon-18" name="arrow_forward" />}
     </a>
   )
 }

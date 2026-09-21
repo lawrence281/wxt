@@ -1,111 +1,260 @@
-import { useState } from 'react'
-import type { MouseEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties, MouseEvent } from 'react'
+import Button from '../ui/Button'
 import Icon from '../ui/Icon'
+import Logo from '../ui/Logo'
+import ScrollProgress from '../ui/ScrollProgress'
 import { moreNavLinks, primaryNavLinks } from '../../data/navigation'
+import { observeInView } from '../../lib/inView'
+import { cn } from '../../lib/cn'
 import { scrollToHash } from '../../utils/scrollToHash'
+
+const SECTION_IDS = ['home', 'about', 'products-section', 'team', 'contact']
+const mobileLinks = [...primaryNavLinks, ...moreNavLinks]
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [activeId, setActiveId] = useState('home')
+  const moreRef = useRef<HTMLDivElement>(null)
 
   const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     scrollToHash(event, href)
     setMobileOpen(false)
+    setMoreOpen(false)
   }
 
-  return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-bar">
-      <div className="h-20 max-w-7xl mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between">
-        <a className="flex items-center gap-3 group focus:outline-none" href="#">
-          <div className="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105">
-            <img src="/favicon.svg" alt="WX Technologies" className="w-6 h-6" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none group-hover:text-secondary transition-colors duration-150">
-              WX Technologies
-            </span>
-            <span className="font-eyebrow text-eyebrow text-on-surface-variant uppercase tracking-widest mt-1">
-              People &amp; Technology
-            </span>
-          </div>
-        </a>
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-          {primaryNavLinks.map((link) => (
-            <a
-              key={link.label}
-              aria-current={link.label === 'Home' ? 'page' : undefined}
-              className={
-                link.label === 'Home'
-                  ? 'px-3 py-2 transition-all duration-150 bg-surface-container text-secondary font-label-lg rounded-lg'
-                  : 'px-3 py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-all duration-150'
-              }
-              href={link.href}
-              onClick={(event) => handleNavClick(event, link.href)}
-            >
-              {link.label}
-            </a>
-          ))}
-          <div className="relative group">
-            <button
-              className="flex items-center gap-1 px-3 py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-all duration-150 focus:outline-none"
-              type="button"
-            >
-              <span>More</span>
-              <Icon name="expand_more" className="text-icon-18 transition-transform duration-200 group-hover:rotate-180" />
-            </button>
-            <div className="absolute right-0 top-full mt-1.5 w-44 p-1.5 bg-surface-container-lowest rounded-xl shadow-popover opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-              {moreNavLinks.map((link) => (
+  // Scroll-spy: whichever section crosses a thin band at mid-viewport becomes the active link.
+  useEffect(() => {
+    const stops = SECTION_IDS.flatMap((id) => {
+      const section = document.getElementById(id)
+      if (!section) return []
+      return [
+        observeInView(
+          section,
+          (entry) => {
+            if (entry.isIntersecting) setActiveId(id)
+          },
+          { rootMargin: '-45% 0px -54% 0px' },
+        ),
+      ]
+    })
+    return () => stops.forEach((stop) => stop())
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.style.overflow = mobileOpen ? 'hidden' : ''
+    return () => {
+      document.documentElement.style.overflow = ''
+    }
+  }, [mobileOpen])
+
+  // Close the mobile menu if the viewport grows into the desktop layout while it is open.
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 1024px)')
+    const onChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setMobileOpen(false)
+    }
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    if (!mobileOpen && !moreOpen) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setMobileOpen(false)
+      setMoreOpen(false)
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (moreOpen && !moreRef.current?.contains(event.target as Node)) setMoreOpen(false)
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [mobileOpen, moreOpen])
+
+  return (
+    <>
+      <header
+        className={cn(
+          'fixed inset-x-0 top-0 z-50 border-b transition-base',
+          scrolled ? 'border-line bg-ground/85 backdrop-blur-md' : 'border-transparent bg-transparent',
+        )}
+      >
+        <div
+          className={cn(
+            'mx-auto grid max-w-site grid-cols-[1fr_auto] items-center px-page transition-[height] duration-(--duration-base) ease-out-expo lg:grid-cols-[1fr_auto_1fr]',
+            scrolled ? 'h-16' : 'h-header',
+          )}
+        >
+          <Logo />
+
+          <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+            {primaryNavLinks.map((link) => {
+              const isActive = link.href === `#${activeId}`
+              return (
                 <a
-                  key={link.label}
-                  className="flex items-center px-3 py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-low hover:text-secondary transition-all duration-150"
+                  aria-current={isActive ? 'location' : undefined}
+                  className={cn(
+                    'group relative px-4 py-2 text-small font-medium transition-fast',
+                    isActive ? 'text-fg' : 'text-fg-soft hover:text-fg',
+                  )}
                   href={link.href}
+                  key={link.label}
                   onClick={(event) => handleNavClick(event, link.href)}
                 >
                   {link.label}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'absolute inset-x-4 bottom-1 h-px origin-left bg-signal transition-base',
+                      isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+                    )}
+                  />
                 </a>
-              ))}
-            </div>
-          </div>
-        </nav>
+              )
+            })}
 
-        <div className="flex items-center gap-3">
-          <a
-            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-secondary text-on-secondary font-label-lg text-label-lg hover:bg-on-secondary-fixed-variant transition-all duration-200 shadow-cta hover:shadow-none"
-            href="#contact"
-            onClick={(event) => scrollToHash(event, '#contact')}
-          >
-            Quick Inquiry
-          </a>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm">
-            <Icon name="person" className="text-on-primary text-icon-18" />
-          </div>
-          <button
-            aria-expanded={mobileOpen}
-            aria-label="Toggle navigation menu"
-            className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container-low transition-colors"
-            onClick={() => setMobileOpen((open) => !open)}
-            type="button"
-          >
-            <Icon name={mobileOpen ? 'close' : 'menu'} className="text-icon-22" />
-          </button>
-        </div>
-      </div>
-
-      {mobileOpen && (
-        <nav className="lg:hidden border-t border-outline-variant/30 bg-surface-container-lowest px-margin py-3 flex flex-col gap-1">
-          {[...primaryNavLinks, ...moreNavLinks].map((link) => (
-            <a
-              key={link.label}
-              className="px-3 py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-all duration-150"
-              href={link.href}
-              onClick={(event) => handleNavClick(event, link.href)}
+            <div
+              className="relative"
+              onPointerEnter={(event) => event.pointerType === 'mouse' && setMoreOpen(true)}
+              onPointerLeave={(event) => event.pointerType === 'mouse' && setMoreOpen(false)}
+              ref={moreRef}
             >
-              {link.label}
-            </a>
-          ))}
+              <button
+                aria-controls="more-menu"
+                aria-expanded={moreOpen}
+                aria-haspopup="true"
+                className="flex items-center gap-1 px-4 py-2 text-small font-medium text-fg-soft transition-fast hover:text-fg"
+                onClick={() => setMoreOpen((open) => !open)}
+                type="button"
+              >
+                <span>More</span>
+                <Icon
+                  className={cn('text-icon-18 transition-base', moreOpen && 'rotate-180')}
+                  name="expand_more"
+                />
+              </button>
+              <div
+                className={cn(
+                  'absolute right-0 top-full w-52 pt-2 transition-base',
+                  moreOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0',
+                )}
+                id="more-menu"
+              >
+                <ul className="border border-line bg-raised p-1.5 shadow-lift">
+                  {moreNavLinks.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        className="flex items-center justify-between rounded-xs px-3 py-2.5 text-small font-medium text-fg-soft transition-fast hover:bg-ground hover:text-fg"
+                        href={link.href}
+                        onClick={(event) => handleNavClick(event, link.href)}
+                      >
+                        {link.label}
+                        <Icon className="text-icon-16" name="arrow_outward" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+          <div className="flex items-center justify-end gap-3">
+            <Button
+              className="hidden min-h-10 px-5 sm:inline-flex"
+              href="#contact"
+              onClick={(event) => scrollToHash(event, '#contact')}
+            >
+              Quick Inquiry
+            </Button>
+            <span
+              aria-hidden="true"
+              className="grid size-10 place-items-center rounded-pill border border-line-strong text-fg"
+            >
+              <Icon className="text-icon-20" name="person" />
+            </span>
+            <button
+              aria-controls="mobile-menu"
+              aria-expanded={mobileOpen}
+              aria-label="Toggle navigation menu"
+              className="relative grid size-10 place-items-center lg:hidden"
+              onClick={() => setMobileOpen((open) => !open)}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'absolute h-px w-6 bg-fg transition-base',
+                  mobileOpen ? 'translate-y-0 rotate-45' : '-translate-y-[0.3rem]',
+                )}
+              />
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'absolute h-px w-6 bg-fg transition-base',
+                  mobileOpen ? 'translate-y-0 -rotate-45' : 'translate-y-[0.3rem]',
+                )}
+              />
+            </button>
+          </div>
+        </div>
+
+        <ScrollProgress />
+      </header>
+
+      <div
+        className={cn(
+          'fixed inset-0 z-40 flex flex-col overflow-y-auto bg-ground px-page pb-10 pt-[calc(var(--spacing-header)+1rem)] transition-[opacity,visibility] duration-(--duration-base) lg:hidden',
+          mobileOpen ? 'visible opacity-100' : 'invisible opacity-0',
+        )}
+        id="mobile-menu"
+        inert={!mobileOpen}
+      >
+        <nav aria-label="Mobile">
+          <ul className="border-t border-line">
+            {mobileLinks.map((link, index) => (
+              <li className="overflow-hidden border-b border-line" key={link.label}>
+                <a
+                  className={cn(
+                    'flex items-center justify-between py-5 font-display text-display-md text-fg transition-slow',
+                    mobileOpen ? 'translate-y-0' : 'translate-y-full',
+                  )}
+                  href={link.href}
+                  onClick={(event) => handleNavClick(event, link.href)}
+                  style={{ transitionDelay: mobileOpen ? `${120 + index * 60}ms` : '0ms' } as CSSProperties}
+                >
+                  {link.label}
+                  <Icon className="text-icon-24 text-signal" name="arrow_outward" />
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
-      )}
-    </header>
+        <Button
+          arrow
+          className="mt-10 w-full sm:hidden"
+          href="#contact"
+          onClick={(event) => handleNavClick(event, '#contact')}
+        >
+          Quick Inquiry
+        </Button>
+      </div>
+    </>
   )
 }
 

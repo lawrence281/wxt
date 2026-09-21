@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { FormEvent } from 'react'
 import Icon from '../ui/Icon'
+import { cn } from '../../lib/cn'
 
 interface ChatMessage {
   id: number
@@ -25,6 +27,15 @@ function ChatButton() {
     if (isOpen) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isOpen])
 
+  useEffect(() => {
+    if (!isOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen])
+
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
     const text = input.trim()
@@ -45,39 +56,44 @@ function ChatButton() {
   return (
     <>
       {isOpen && (
-        <div className="animate-chat-pop fixed bottom-24 right-6 z-50 flex w-[calc(100vw-3rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-outline-variant/30 bg-surface-container-lowest shadow-float">
-          <div className="flex items-center justify-between gap-3 bg-secondary px-5 py-4 text-on-secondary">
+        <div
+          aria-label="WXT Assistant chat"
+          className="fixed bottom-24 right-4 z-50 flex w-[calc(100vw-2rem)] max-w-sm animate-chat-pop flex-col overflow-hidden rounded-md border border-line-strong bg-raised text-fg shadow-float sm:right-6"
+          role="dialog"
+        >
+          <div className="flex items-center justify-between gap-3 bg-ink px-5 py-4 text-paper">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-on-secondary/15">
-                <Icon name="smart_toy" className="text-icon-20" />
+              <span className="grid size-9 place-items-center rounded-pill bg-paper/10">
+                <Icon className="text-icon-20" name="smart_toy" />
               </span>
               <div className="flex flex-col leading-tight">
-                <span className="font-label-lg text-label-lg font-semibold">WXT Assistant</span>
-                <span className="flex items-center gap-1.5 font-label-sm text-label-sm text-on-secondary/80">
-                  <span className="h-1.5 w-1.5 rounded-full bg-tertiary-fixed-dim animate-pulse" />
+                <span className="font-display text-title">WXT Assistant</span>
+                <span className="mt-1 flex items-center gap-1.5 font-mono text-label uppercase text-paper/70">
+                  <span className="size-1.5 animate-pulse rounded-pill bg-live" />
                   Online
                 </span>
               </div>
             </div>
             <button
               aria-label="Close chat"
-              className="rounded-full p-1.5 transition-colors hover:bg-on-secondary/15"
+              className="grid size-9 place-items-center rounded-pill transition-base hover:bg-paper/15"
               onClick={() => setIsOpen(false)}
               type="button"
             >
-              <Icon name="close" className="text-icon-20" />
+              <Icon className="text-icon-20" name="close" />
             </button>
           </div>
 
-          <div className="flex max-h-96 flex-1 flex-col gap-3 overflow-y-auto bg-surface-container-low/40 px-4 py-4">
+          <div aria-live="polite" className="flex max-h-96 min-h-48 flex-1 flex-col gap-3 overflow-y-auto bg-ground px-4 py-4">
             {messages.map((message) => (
-              <div key={message.id} className={`flex ${message.from === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={cn('flex', message.from === 'user' ? 'justify-end' : 'justify-start')} key={message.id}>
                 <p
-                  className={`max-w-[80%] rounded-2xl px-4 py-2.5 font-body-sm text-body-sm ${
+                  className={cn(
+                    'max-w-[82%] px-4 py-2.5 text-small',
                     message.from === 'user'
-                      ? 'rounded-br-sm bg-secondary text-on-secondary'
-                      : 'rounded-bl-sm bg-surface-container-lowest text-on-surface shadow-sm'
-                  }`}
+                      ? 'rounded-md rounded-br-xs bg-accent text-on-accent'
+                      : 'rounded-md rounded-bl-xs border border-line bg-raised text-fg',
+                  )}
                 >
                   {message.text}
                 </p>
@@ -86,9 +102,10 @@ function ChatButton() {
             <div ref={messagesEndRef} />
           </div>
 
-          <form className="flex items-center gap-2 border-t border-outline-variant/20 p-3" onSubmit={handleSubmit}>
+          <form className="flex items-center gap-2 border-t border-line p-3" onSubmit={handleSubmit}>
             <input
-              className="flex-1 rounded-full bg-surface-container-low px-4 py-2.5 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50"
+              aria-label="Type your message"
+              className="min-h-11 flex-1 border-b border-line-strong bg-transparent px-2 text-small text-fg transition-base placeholder:text-fg-mute focus:border-signal focus:outline-none"
               onChange={(event) => setInput(event.target.value)}
               placeholder="Type your message..."
               type="text"
@@ -96,11 +113,11 @@ function ChatButton() {
             />
             <button
               aria-label="Send message"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-on-secondary transition-colors hover:bg-on-secondary-fixed-variant disabled:opacity-40"
+              className="grid size-11 shrink-0 place-items-center rounded-sm bg-ink text-paper transition-base hover:bg-accent disabled:opacity-40 disabled:hover:bg-ink"
               disabled={!input.trim()}
               type="submit"
             >
-              <Icon name="send" className="text-icon-18" />
+              <Icon className="text-icon-18" name="send" />
             </button>
           </form>
         </div>
@@ -109,23 +126,18 @@ function ChatButton() {
       <button
         aria-expanded={isOpen}
         aria-label={isOpen ? 'Close chat' : 'Chat with us'}
-        className="fixed bottom-6 right-6 z-50 group inline-flex items-center gap-2 p-4 sm:pl-4 sm:pr-5 sm:py-3 rounded-full bg-secondary text-on-secondary shadow-sm hover:shadow-float transition-all duration-200 ease-out transform hover:-translate-y-0.5 hover:scale-105 hover:bg-on-secondary-fixed-variant active:translate-y-0 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+        className="fixed bottom-4 right-4 z-50 inline-flex min-h-14 items-center gap-3 rounded-pill bg-accent p-4 text-on-accent shadow-float transition-base hover:-translate-y-0.5 hover:bg-accent-strong active:translate-y-0 sm:bottom-6 sm:right-6 sm:px-6"
         onClick={() => setIsOpen((prev) => !prev)}
         type="button"
       >
         {isOpen ? (
-          <Icon name="close" className="text-icon-22" />
+          <Icon className="text-icon-24" name="close" />
         ) : (
-          <svg
-            aria-hidden="true"
-            className="w-[length:var(--text-icon-22)] h-[length:var(--text-icon-22)] shrink-0"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-          >
+          <svg aria-hidden="true" className="size-6 shrink-0" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 1.045-.166 2.545-.549 3.55-1.29A9.98 9.98 0 0 0 8 15z" />
           </svg>
         )}
-        <span className="hidden font-label-lg text-label-lg sm:inline">{isOpen ? 'Close' : 'Chat with us'}</span>
+        <span className="hidden text-small font-semibold sm:inline">{isOpen ? 'Close' : 'Chat with us'}</span>
       </button>
     </>
   )

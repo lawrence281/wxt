@@ -1,107 +1,153 @@
-import Icon from '../ui/Icon'
+import { useRef } from 'react'
+import type { PointerEvent } from 'react'
 import Button from '../ui/Button'
+import CornerMarks from '../ui/CornerMarks'
+import Icon from '../ui/Icon'
+import Reveal from '../ui/Reveal'
+import SplitText from '../ui/SplitText'
 import { coreDisciplines } from '../../data/coreDisciplines'
+import { useParallax } from '../../hooks/useParallax'
 import heroImage from '../../assets/Images/unnamed-removebg-preview.png'
 
 function Hero() {
+  const stageRef = useRef<HTMLDivElement>(null)
+  const scrollLayerRef = useRef<HTMLDivElement>(null)
+  useParallax(scrollLayerRef, 0.06)
+
+  // Mouse-only pointer parallax: writes normalized --px/--py (-1..1) that layers shift by.
+  const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
+    const stage = stageRef.current
+    if (!stage || event.pointerType !== 'mouse') return
+    const rect = stage.getBoundingClientRect()
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2
+    stage.style.setProperty('--px', Math.max(-1, Math.min(1, x)).toFixed(3))
+    stage.style.setProperty('--py', Math.max(-1, Math.min(1, y)).toFixed(3))
+  }
+
   return (
     <section
-      className="relative w-full overflow-hidden bg-gradient-to-b from-surface to-surface-container-low/60 pb-20 lg:pb-32 pt-10 scroll-mt-24"
+      aria-labelledby="hero-title"
+      className="relative isolate scroll-mt-header overflow-hidden bg-ground pt-[calc(var(--spacing-header)+clamp(2rem,4vw,4.5rem))]"
       id="home"
+      onPointerMove={handlePointerMove}
     >
-      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-[-10%] w-[500px] h-[500px] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="bg-dots absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_72%_36%,black,transparent)]" />
+      </div>
 
-      {/* Mobile only: the card image, reused as a soft ambient background behind the content */}
-      <img
-        alt=""
-        aria-hidden="true"
-        className="hero-mobile-bg absolute inset-0 z-0 block h-full w-full object-contain blur-sm sm:hidden"
-        src={heroImage}
-      />
-
-      <div className="max-w-7xl mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          <div className="lg:col-span-6 flex flex-col items-start space-y-6">
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-surface-container-highest/60 text-secondary font-label-sm text-label-sm">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+      <div className="mx-auto max-w-site px-page">
+        <div className="grid items-center gap-y-16 lg:grid-cols-12 lg:gap-x-[var(--spacing-gutter)]">
+          <div className="lg:col-span-7">
+            <Reveal className="mb-8 inline-flex items-center gap-3 rounded-pill border border-line-strong px-4 py-2 font-mono text-label uppercase tracking-normal text-fg-soft sm:tracking-widest">
+              <span className="relative grid size-2 place-items-center">
+                <span className="absolute inset-0 animate-ping-soft rounded-pill bg-live" />
+                <span className="relative size-2 rounded-pill bg-live" />
+              </span>
               Enterprise Social Loyalty Intelligence
-            </div>
+            </Reveal>
 
-            <h1 className="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight leading-tight">
-              WXT : A Social Loyalty Reward Platform Company
-            </h1>
+            <SplitText
+              as="h1"
+              className="max-w-[16ch] text-display-xl text-fg"
+              delay={100}
+              id="hero-title"
+              text={[
+                { text: 'WXT :', className: 'text-signal' },
+                { text: 'A Social Loyalty Reward Platform Company' },
+              ]}
+            />
 
-            <div className="space-y-4 text-on-surface-variant font-body-lg text-body-lg">
-              <p>
+            <Reveal className="mt-10 max-w-xl space-y-5" delay={380}>
+              <p className="text-lede text-fg">
                 WX Technologies Pvt Ltd., is an Indian technology company based in Chennai, Tamilnadu. The company
                 owns RewardForPromo (Social Loyalty Reward Platform) among other products and services.
               </p>
-              <p>
+              <p className="text-body text-fg-soft">
                 We aim to help businesses turn customers into brand advocates using our Social Loyalty Reward
                 Platform. We do that by innovatively integrating decision sciences, advanced math, and ML.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full pt-4">
-              {coreDisciplines.map((discipline) => (
-                <div
-                  key={discipline.title}
-                  className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all duration-200 group"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-on-secondary transition-colors duration-200">
-                    <Icon name={discipline.icon} className="text-icon-22" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-label-lg text-label-lg text-on-surface leading-tight">
-                      {discipline.title}
-                    </span>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant">
-                      {discipline.subtitle}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-4 flex flex-wrap items-center gap-4">
-              <Button href="#products-section">
-                <span>Explore RewardForPromo</span>
-                <Icon name="arrow_forward" className="text-icon-18" />
+            <Reveal className="mt-10 flex flex-wrap items-center gap-4" delay={520}>
+              <Button arrow href="#products-section">
+                Explore RewardForPromo
               </Button>
-              <Button variant="secondary" href="#about">
+              <Button href="#about" variant="outline">
                 Our Methodology
               </Button>
-            </div>
+            </Reveal>
           </div>
 
-          <div className="lg:col-span-6 relative hidden sm:flex items-center justify-center">
-            <div className="relative w-full max-w-lg mx-auto hero-3d-perspective py-6">
-              <div className="hero-ambient-glow absolute -inset-6 bg-gradient-to-tr from-secondary/25 via-secondary-container/20 to-tertiary-fixed-dim/30 rounded-[2.5rem] blur-2xl pointer-events-none" />
-              <div className="hero-3d-card relative rounded-2xl bg-surface-container-lowest/90 backdrop-blur-xl p-3 sm:p-4 shadow-card-float border border-white/70 overflow-hidden group cursor-pointer preserve-3d">
-                <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center translate-z-img">
-                  <img
-                    alt="Abstract 3D graphic representing AI-driven orchestration for the social loyalty platform"
-                    className="w-full h-full object-cover rounded-xl transform transition-transform duration-700 ease-out group-hover:scale-105"
-                    src={heroImage}
-                  />
-                </div>
+          <Reveal className="lg:col-span-5" delay={250} variant="scale">
+            <div className="relative mx-auto w-full max-w-[34rem] pb-6" ref={stageRef}>
+              <div className="relative aspect-[5/4]" ref={scrollLayerRef}>
+                <div className="parallax absolute inset-0">
+                  <CornerMarks />
+                  <div className="absolute left-1/2 top-1/2 size-[70%] -translate-x-1/2 -translate-y-1/2 animate-drift rounded-pill bg-signal/20 blur-3xl" />
 
-                <div className="pt-4 pb-2 px-3 flex items-center justify-between translate-z-badge">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse" />
-                    <span className="font-label-sm text-label-sm font-semibold text-on-surface tracking-tight">
-                      Autonomous AI Orchestration
-                    </span>
+                  <div className="pointer-shift absolute inset-0 [--shift:6px]">
+                    <svg aria-hidden="true" className="absolute inset-0 size-full" fill="none" viewBox="0 0 500 400">
+                      <circle cx="250" cy="200" r="170" stroke="var(--tone-line-strong)" />
+                      <circle cx="250" cy="200" r="122" stroke="var(--tone-line-strong)" strokeDasharray="2 7" />
+                    </svg>
+                    <div className="absolute left-1/2 top-1/2 aspect-square h-[85%] -translate-x-1/2 -translate-y-1/2">
+                      <div className="absolute inset-0 animate-orbit-fast">
+                        <span className="absolute left-1/2 top-0 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-pill bg-signal" />
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-eyebrow text-eyebrow uppercase tracking-wider text-secondary px-2.5 py-1 rounded-full bg-secondary/10 shadow-xs">
-                    RewardForPromo
+
+                  <div className="pointer-shift absolute inset-[2%] [--shift:-16px]">
+                    <img
+                      alt="Abstract 3D graphic representing AI-driven orchestration for the social loyalty platform"
+                      className="size-full animate-float object-contain"
+                      decoding="async"
+                      fetchPriority="high"
+                      height={384}
+                      src={heroImage}
+                      width={512}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pointer-shift absolute bottom-0 left-0 [--shift:10px] sm:-left-3">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border border-line bg-raised px-4 py-3 shadow-lift">
+                  <span className="flex items-center gap-2.5 text-small font-semibold text-fg">
+                    <span className="size-2 animate-pulse rounded-pill bg-signal" />
+                    Autonomous AI Orchestration
                   </span>
+                  <span className="font-mono text-label uppercase text-signal">RewardForPromo</span>
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
+
+        <ul className="mt-20 grid border-t border-line-strong sm:grid-cols-3 lg:mt-28">
+          {coreDisciplines.map((discipline, index) => (
+            <Reveal
+              as="li"
+              className="group relative flex items-center gap-5 py-7 not-first:border-t not-first:border-line sm:px-8 sm:first:pl-0 sm:not-first:border-l sm:not-first:border-t-0"
+              delay={index * 90}
+              key={discipline.title}
+            >
+              <span
+                aria-hidden="true"
+                className="absolute -top-px left-0 h-px w-full origin-left scale-x-0 bg-signal transition-slow group-hover:scale-x-100"
+              />
+              <Icon
+                className="text-icon-28 text-fg-mute transition-base group-hover:text-signal"
+                name={discipline.icon}
+              />
+              <span className="flex flex-col">
+                <span className="font-display text-title leading-tight text-fg">{discipline.title}</span>
+                <span className="mt-1 font-mono text-label uppercase text-fg-mute">{discipline.subtitle}</span>
+              </span>
+            </Reveal>
+          ))}
+        </ul>
       </div>
     </section>
   )

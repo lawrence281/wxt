@@ -1,24 +1,16 @@
 import type { ReactNode } from 'react'
+import { cn } from '../../lib/cn'
 
 interface SectionEyebrowProps {
   children: ReactNode
-  tone?: 'light' | 'dark'
   className?: string
 }
 
-function SectionEyebrow({ children, tone = 'light', className = '' }: SectionEyebrowProps) {
-  if (tone === 'dark') {
-    return (
-      <div
-        className={`inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 text-tertiary-fixed font-eyebrow text-eyebrow uppercase tracking-widest ${className}`}
-      >
-        {children}
-      </div>
-    )
-  }
-
+/** Small mono label with a leading rule: the quiet "kicker" above section titles. */
+function SectionEyebrow({ children, className }: SectionEyebrowProps) {
   return (
-    <span className={`font-eyebrow text-eyebrow uppercase tracking-widest text-secondary block ${className}`}>
+    <span className={cn('inline-flex items-center gap-3 font-mono text-label uppercase text-signal', className)}>
+      <span aria-hidden="true" className="h-px w-8 bg-current" />
       {children}
     </span>
   )

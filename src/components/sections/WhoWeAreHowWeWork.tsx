@@ -1,74 +1,113 @@
+import { useRef } from 'react'
+import type { CSSProperties } from 'react'
 import Icon from '../ui/Icon'
-import SectionEyebrow from '../ui/SectionEyebrow'
+import Reveal from '../ui/Reveal'
+import ScrollText from '../ui/ScrollText'
+import SectionHeader from '../ui/SectionHeader'
 import { processSteps } from '../../data/processSteps'
+import type { ProcessStep } from '../../data/processSteps'
+import { useInView } from '../../hooks/useInView'
+import { useScrollProgress } from '../../hooks/useScrollProgress'
+import { cn } from '../../lib/cn'
+
+function TimelineStep({ step }: { step: ProcessStep }) {
+  const ref = useRef<HTMLLIElement>(null)
+  const reached = useInView(ref, { threshold: 0, rootMargin: '0px 0px -55% 0px' })
+  const number = step.phase.replace(/\D/g, '')
+
+  return (
+    <li className="group relative border-b border-line py-10 pl-8 sm:pl-14 lg:py-12 lg:pl-20" ref={ref}>
+      <span
+        aria-hidden="true"
+        className={cn(
+          'absolute left-0 top-[3.35rem] size-3 -translate-x-1/2 rounded-pill border transition-slow lg:top-[3.85rem]',
+          reached ? 'border-signal bg-signal' : 'border-line-strong bg-ground',
+        )}
+      />
+      <div className="flex items-start justify-between gap-6">
+        <div className="max-w-xl">
+          <p className="flex items-center gap-3 font-mono text-label uppercase text-signal">
+            <Icon className="text-icon-20" name={step.icon} />
+            {step.phase}
+          </p>
+          <h3 className="mt-5 text-display-sm text-fg transition-base group-hover:translate-x-1.5">{step.title}</h3>
+          <p className="mt-4 text-body text-fg-soft">{step.description}</p>
+        </div>
+        <span
+          aria-hidden="true"
+          className="select-none font-display text-display-lg leading-none text-transparent transition-slow [-webkit-text-stroke:1px_var(--tone-line-strong)] group-hover:[-webkit-text-stroke-color:var(--tone-signal)]"
+        >
+          {number}
+        </span>
+      </div>
+    </li>
+  )
+}
 
 function WhoWeAreHowWeWork() {
+  const timelineRef = useRef<HTMLDivElement>(null)
+  useScrollProgress(timelineRef, { start: 0.7, end: 0.5 })
+
   return (
-    <section
-      className="w-full bg-primary-container text-on-primary-container py-24 relative overflow-hidden scroll-mt-24"
-      id="about"
-    >
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
+    <section className="tone-night relative scroll-mt-header overflow-hidden bg-ground py-section text-fg" id="about">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-[18rem] -top-[18rem] size-[46rem] rounded-pill border border-line"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-[10rem] -top-[10rem] size-[30rem] rounded-pill border border-dashed border-line"
+      />
 
-      <div className="max-w-7xl mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-5 flex flex-col space-y-12">
-            <div className="space-y-4">
-              <SectionEyebrow tone="dark">Core Identity</SectionEyebrow>
-              <h2 className="font-headline-xl text-headline-xl font-bold text-white tracking-tight">Who We Are</h2>
-              <p className="font-body-lg text-body-lg text-slate-300 leading-relaxed">
-                We are WXT. We love people. We love technology. We design newer ways to seamlessly connect the two,
-                to create advancement for both.
-              </p>
-            </div>
+      <div className="relative mx-auto max-w-site px-page">
+        <div className="grid gap-y-20 lg:grid-cols-12 lg:gap-x-[var(--spacing-gutter)]">
+          <article className="lg:col-span-5">
+            <SectionHeader className="mb-10" eyebrow="Core Identity" title="Who We Are" />
+            <ScrollText
+              className="text-statement text-fg"
+              text="We are WXT. We love people. We love technology. We design newer ways to seamlessly connect the two, to create advancement for both."
+            />
+          </article>
+          <article className="lg:col-span-6 lg:col-start-7">
+            <SectionHeader className="mb-10" eyebrow="Capabilities" title="What We Do" />
+            <ScrollText
+              className="text-statement text-fg"
+              text="We design and develop niche products powered with AI; on cloud, using cutting-edge technologies for business. Today our focus is on AI, to reimagine recommendation-engines as human intelligence never could."
+            />
+          </article>
+        </div>
 
-            <div className="space-y-4 pt-4">
-              <SectionEyebrow tone="dark">Capabilities</SectionEyebrow>
-              <h2 className="font-headline-xl text-headline-xl font-bold text-white tracking-tight">What We Do</h2>
-              <p className="font-body-lg text-body-lg text-slate-300 leading-relaxed">
-                We design and develop niche products powered with AI; on cloud, using cutting-edge technologies for
-                business. Today our focus is on AI, to reimagine recommendation-engines as human intelligence never
-                could.
-              </p>
-            </div>
+        <Reveal className="mt-20 grid items-center gap-6 border-y border-line py-8 lg:grid-cols-12 lg:gap-x-[var(--spacing-gutter)]">
+          <div className="flex items-center gap-4 lg:col-span-5">
+            <Icon className="text-icon-32 text-signal" name="verified_user" />
+            <h3 className="text-title text-fg">Cloud Native &amp; Scalable</h3>
+          </div>
+          <p className="text-body text-fg-soft lg:col-span-6 lg:col-start-7">
+            Operating enterprise grade infrastructure ensuring{' '}
+            <span className="font-mono font-medium text-fg">99.99%</span> availability for customer advocacy and
+            real-time loyalty orchestration.
+          </p>
+        </Reveal>
 
-            <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm space-y-3">
-              <div className="flex items-center gap-3">
-                <Icon name="verified_user" className="text-secondary text-icon-26" />
-                <span className="font-headline-sm text-headline-sm text-white">Cloud Native &amp; Scalable</span>
-              </div>
-              <p className="font-body-sm text-body-sm text-slate-300">
-                Operating enterprise grade infrastructure ensuring 99.99% availability for customer advocacy and
-                real-time loyalty orchestration.
-              </p>
+        <div className="mt-section grid gap-y-14 lg:grid-cols-12 lg:gap-x-[var(--spacing-gutter)]">
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-32">
+              <SectionHeader eyebrow="Methodology & Lifecycle" title="How We Work" />
             </div>
           </div>
 
-          <div className="lg:col-span-7 flex flex-col justify-between">
-            <div className="mb-8">
-              <SectionEyebrow tone="dark" className="mb-3">
-                Methodology &amp; Lifecycle
-              </SectionEyebrow>
-              <h2 className="font-headline-xl text-headline-xl font-bold text-white tracking-tight">How We Work</h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="relative lg:col-span-8" ref={timelineRef}>
+            <span aria-hidden="true" className="absolute left-0 top-0 h-full w-px bg-line" />
+            <span
+              aria-hidden="true"
+              className="absolute left-0 top-0 h-full w-px origin-top bg-signal"
+              style={{ transform: 'scaleY(var(--progress, 0))' } as CSSProperties}
+            />
+            <ol className="border-t border-line">
               {processSteps.map((step) => (
-                <div
-                  key={step.title}
-                  className="p-6 rounded-2xl bg-white/5 hover:bg-white/[0.08] transition-all duration-200 flex flex-col space-y-3"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-secondary/20 text-secondary flex items-center justify-center">
-                    <Icon name={step.icon} className="text-icon-26" />
-                  </div>
-                  <span className="font-eyebrow text-eyebrow uppercase tracking-wider text-tertiary-fixed">
-                    {step.phase}
-                  </span>
-                  <h3 className="font-headline-md text-headline-md font-semibold text-white">{step.title}</h3>
-                  <p className="font-body-md text-body-md text-slate-300 leading-relaxed">{step.description}</p>
-                </div>
+                <TimelineStep key={step.title} step={step} />
               ))}
-            </div>
+            </ol>
           </div>
         </div>
       </div>

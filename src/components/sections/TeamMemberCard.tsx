@@ -4,48 +4,45 @@ import { teamSocialLinks } from '../../data/team'
 
 interface TeamMemberCardProps {
   member: TeamMember
-  ariaHidden?: boolean
+  /** Looping copies are inert so they never trap focus or repeat content for assistive tech. */
+  duplicate?: boolean
 }
 
-function TeamMemberCard({ member, ariaHidden = false }: TeamMemberCardProps) {
+function TeamMemberCard({ member, duplicate = false }: TeamMemberCardProps) {
   return (
-    <div
-      aria-hidden={ariaHidden || undefined}
-      className="w-[340px] flex-shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col border border-outline-variant/30"
-    >
-      <div className="h-64 w-full bg-surface-container relative overflow-hidden">
+    <article className="group/card flex w-72 shrink-0 flex-col sm:w-80" data-card inert={duplicate}>
+      <div className="relative aspect-[4/5] overflow-hidden bg-paper">
         <img
           alt={member.imageAlt}
-          className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
+          className="size-full object-cover object-top transition-slow group-hover/card:scale-105"
+          decoding="async"
+          draggable={false}
+          loading="lazy"
           src={member.image}
         />
-        <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-secondary font-label-sm text-label-sm shadow-xs">
-          {member.role}
-        </div>
       </div>
-      <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-        <div>
-          <h3 className="font-headline-md text-headline-md font-semibold text-on-surface">{member.name}</h3>
-          <p className="font-label-sm text-label-sm text-secondary font-medium mt-0.5">{member.role}</p>
-          <p className="font-body-sm text-body-sm text-on-surface-variant mt-3 leading-relaxed">{member.bio}</p>
-        </div>
-        <div className="pt-4 flex items-center gap-3 border-t border-outline-variant/20">
+      <div className="mt-5 flex flex-1 flex-col border-t border-line-strong pt-5">
+        <h3 className="text-title text-fg">{member.name}</h3>
+        <p className="mt-1.5 font-mono text-label uppercase text-signal">{member.role}</p>
+        <p className="mt-4 text-small text-fg-soft">{member.bio}</p>
+        <ul className="mt-auto flex items-center gap-2 pt-6">
           {teamSocialLinks.map((social) => (
-            <a
-              key={social.label}
-              aria-label={`${member.name} on ${social.label}`}
-              className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant transition-all duration-200 hover:bg-secondary hover:text-on-secondary hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:scale-95"
-              href={social.href}
-              rel="noopener noreferrer"
-              target="_blank"
-              title={social.label}
-            >
-              <SocialIcon className="w-4 h-4" name={social.icon} />
-            </a>
+            <li key={social.label}>
+              <a
+                aria-label={`${member.name} on ${social.label}`}
+                className="grid size-10 place-items-center rounded-sm border border-line-strong text-fg transition-base hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-on-accent"
+                href={social.href}
+                rel="noopener noreferrer"
+                target="_blank"
+                title={social.label}
+              >
+                <SocialIcon className="size-4" name={social.icon} />
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
-    </div>
+    </article>
   )
 }
 

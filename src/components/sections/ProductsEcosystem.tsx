@@ -1,72 +1,74 @@
 import Icon from '../ui/Icon'
+import Reveal from '../ui/Reveal'
 import SectionEyebrow from '../ui/SectionEyebrow'
+import SplitText from '../ui/SplitText'
 import OrbitDiagram from './OrbitDiagram'
 import { architecturalPillars, audiencePillars } from '../../data/ecosystem'
 
 function ProductsEcosystem() {
   return (
-    <section className="w-full py-24 bg-surface relative scroll-mt-24" id="products-section">
-      <div className="max-w-7xl mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop">
-        <div className="max-w-3xl mb-16">
-          <SectionEyebrow className="mb-2">Enterprise SaaS Architecture</SectionEyebrow>
-          <h2 className="font-headline-xl text-headline-xl font-bold text-on-surface mb-2">Products</h2>
-          <p className="font-headline-lg text-headline-lg font-semibold text-secondary mb-4">RewardForPromo</p>
-          <p className="font-body-lg text-body-lg text-on-surface-variant">
+    <section
+      aria-labelledby="products-title"
+      className="relative scroll-mt-header bg-ground py-section"
+      id="products-section"
+    >
+      <div className="relative mx-auto max-w-site px-page">
+        <div className="grid gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-[var(--spacing-gutter)]">
+          <div className="lg:col-span-7">
+            <Reveal>
+              <SectionEyebrow>Enterprise SaaS Architecture</SectionEyebrow>
+            </Reveal>
+            <SplitText as="h2" className="mt-6 text-display-md text-fg-soft" id="products-title" text="Products" />
+            <SplitText as="p" className="mt-2 font-display text-display-lg text-signal" delay={150} text="RewardForPromo" />
+          </div>
+          <Reveal as="p" className="text-lede text-fg-soft lg:col-span-5" delay={250}>
             RewardForPromo (R4P) is a SaaS platform powered by an AI-based recommendation engine that assists
             businesses in expanding their social media reach and increasing sales by transforming current customers
             (nano-influencers) into brand advocates.
-          </p>
+          </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 flex flex-col items-center">
-            <div className="w-full max-w-lg bg-surface-container-lowest rounded-3xl p-8 shadow-sm relative overflow-hidden">
-              <div className="text-center mb-6">
-                <span className="font-eyebrow text-eyebrow uppercase tracking-wider text-on-surface-variant">
-                  Decentralized Synergy
-                </span>
-                <h4 className="font-headline-sm text-headline-sm font-semibold text-on-surface">
-                  RewardForPromo Ecosystem
-                </h4>
-              </div>
-              <OrbitDiagram />
-              <div className="mt-6 pt-4 text-center">
-                <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  Autonomous AI Routing connecting Nano-Influencers with Regional Commerce
-                </span>
-              </div>
+        <div className="mt-20 grid gap-y-16 lg:mt-28 lg:grid-cols-12 lg:items-start lg:gap-x-[var(--spacing-gutter)]">
+          <Reveal className="lg:col-span-6" variant="fade">
+            <div className="mb-8 text-center">
+              <span className="font-mono text-label uppercase text-fg-mute">Decentralized Synergy</span>
+              <h3 className="mt-2 text-title text-fg">RewardForPromo Ecosystem</h3>
             </div>
-          </div>
+            <OrbitDiagram />
+            <p className="mx-auto mt-8 max-w-sm text-center text-small text-fg-mute">
+              Autonomous AI Routing connecting Nano-Influencers with Regional Commerce
+            </p>
+          </Reveal>
 
-          <div className="lg:col-span-6 flex flex-col space-y-6">
-            {audiencePillars.map((pillar) => (
-              <div
-                key={pillar.title}
-                className="p-6 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary shrink-0">
-                    <Icon name={pillar.icon} className="text-icon-26" />
+          <div className="lg:col-span-6 xl:col-span-5 xl:col-start-8">
+            <ul className="border-t border-line-strong">
+              {audiencePillars.map((pillar, index) => (
+                <Reveal as="li" className="group border-b border-line py-9" delay={index * 90} key={pillar.title}>
+                  <div className="flex items-start gap-5">
+                    <Icon
+                      className="mt-0.5 text-icon-28 text-fg-mute transition-base group-hover:text-signal"
+                      name={pillar.icon}
+                    />
+                    <div>
+                      <h3 className="text-title text-fg transition-base group-hover:translate-x-1">{pillar.title}</h3>
+                      <p className="mt-2 text-body text-fg-soft">{pillar.description}</p>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface">
-                      {pillar.title} <span className="font-body-md font-normal text-on-surface-variant">{pillar.description}</span>
-                    </h3>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div className="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {architecturalPillars.map((pillar) => (
-                <div key={pillar.label} className="p-4 rounded-xl bg-surface-container flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary">
-                    <Icon name={pillar.icon} className="text-icon-20" />
-                  </div>
-                  <span className="font-label-lg text-label-lg text-on-surface">{pillar.label}</span>
-                </div>
+                </Reveal>
               ))}
-            </div>
+            </ul>
+
+            <Reveal as="ul" className="mt-10 grid gap-px border border-line bg-line sm:grid-cols-3" delay={200}>
+              {architecturalPillars.map((pillar) => (
+                <li className="group flex items-center gap-3 bg-ground p-4" key={pillar.label}>
+                  <Icon
+                    className="text-icon-20 text-signal transition-base group-hover:scale-110"
+                    name={pillar.icon}
+                  />
+                  <span className="text-small font-medium text-fg">{pillar.label}</span>
+                </li>
+              ))}
+            </Reveal>
           </div>
         </div>
       </div>
