@@ -48,7 +48,7 @@ function LegalToc({ items, activeId }: LegalTocProps) {
     return (
       <nav
         aria-label="Contents"
-        className="sticky top-28 max-h-[calc(100vh-8.5rem)] overflow-y-auto overscroll-contain pr-2"
+        className="no-scrollbar sticky top-28 max-h-[calc(100vh-8.5rem)] overflow-y-auto overscroll-contain pr-2"
       >
         <p className="mb-4 font-mono text-label uppercase text-fg-mute">Contents</p>
         {list}
@@ -69,7 +69,7 @@ function LegalToc({ items, activeId }: LegalTocProps) {
         <Icon className={cn('text-icon-20 transition-base', open && 'rotate-180')} name="expand_more" />
       </button>
       {open && (
-        <div className="max-h-[60vh] overflow-y-auto overscroll-contain border-t border-line px-4 py-3" id="legal-toc">
+        <div className="no-scrollbar max-h-[60vh] overflow-y-auto overscroll-contain border-t border-line px-4 py-3" id="legal-toc">
           {list}
         </div>
       )}
