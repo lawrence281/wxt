@@ -7,7 +7,7 @@ import Reveal from '../ui/Reveal'
 import SplitText from '../ui/SplitText'
 import { coreDisciplines } from '../../data/coreDisciplines'
 import { useParallax } from '../../hooks/useParallax'
-import heroImage from '../../assets/Images/unnamed-removebg-preview.png'
+import HeroIllustration from './HeroIllustration'
 
 function Hero() {
   const stageRef = useRef<HTMLDivElement>(null)
@@ -99,15 +99,7 @@ function Hero() {
                   </div>
 
                   <div className="pointer-shift absolute inset-[2%] [--shift:-16px]">
-                    <img
-                      alt="Abstract 3D graphic representing AI-driven orchestration for the social loyalty platform"
-                      className="size-full animate-float object-contain"
-                      decoding="async"
-                      fetchPriority="high"
-                      height={384}
-                      src={heroImage}
-                      width={512}
-                    />
+                    <HeroIllustration alt="Illustrated team standing on each other's shoulders to build a mobile app interface" />
                   </div>
                 </div>
               </div>
